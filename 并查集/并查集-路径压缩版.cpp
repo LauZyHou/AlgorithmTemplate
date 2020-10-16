@@ -55,7 +55,7 @@ int main() {
 			if (find(a) == find(b))
 				puts("Yes");
 			else
-				puts("No"); 
+				puts("No");
 	}
 	
 	return 0;
