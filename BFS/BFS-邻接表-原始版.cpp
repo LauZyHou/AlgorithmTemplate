@@ -4,7 +4,7 @@ using namespace std;
 
 /*
 		数据结构	使用空间 	性质 
-DFS 	stack		O(h)		不具最近性质  
+BFS		queue		O(2^h)		边权都是1时，第一次搜到的解是最近的 
 */
 
 // 结点数量最大值 
@@ -29,26 +29,29 @@ void add_edge(int a, int b) {
 	h[a] = idx ++;
 }
 
-// 在邻接表上DFS时，要记录哪些结点访问过了 
+// 在邻接表上BFS时，要记录哪些结点访问过了 
 bool st[N];
 
-// 邻接表上DFS，从点u位置 
-void dfs(int u) {
-	// 标记被搜过了 
-	st[u] = true;
+void bfs(int u) {
+	// 加入队列中 
+	queue<int> q;
+	q.push(u);
 	
-	// 遍历从u出发的所有边，另一侧的结点
-	for (int i = h[u]; i != -1; i = ne[i]) {
-		// i是在链表数组中的下标，这里要变成图中的结点号
-		int j = e[i];
-		// 如果这个结点没被访问过，就往下DFS
-		if (!st[j])
-			dfs(j);
+	while (q.size()) {
+		int v = q.front();
+		q.pop();
+		// 记录被访问了
+		st[v] = true;
+		// 遍历从v出发的所有边，另一侧的结点
+		for (int i = h[v]; i != -1; i = ne[i]) {
+			// i是在链表数组中的下标，这里要变成图中的结点号
+			int j = e[i];
+			// 如果这个结点没被访问过，就加入队列中 
+			if (!st[j])
+				q.push(j);
+		}
 	}
-	
-	// 这里不需要像解空间上的DFS（实际是回溯）一样取消标记
-	// 图上的遍历用的搜索就是搜到一次就不会再来搜这个点了 
-} 
+}
 
 int main() {
 	// 邻接表初始每个位置链表都是空的，所以全部设为-1 
@@ -56,10 +59,9 @@ int main() {
 	
 	// 创建邻接表表示的有向图...（无向图就存两个方向）
 	
-	// 从点1开始dfs 
-	dfs(1);
+	// 从点1开始bfs 
+	bfs(1);
 	
 	return 0;
 }
 
- 
